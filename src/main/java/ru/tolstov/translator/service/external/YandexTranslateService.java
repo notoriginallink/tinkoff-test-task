@@ -1,4 +1,4 @@
-package ru.tolstov.translator.service;
+package ru.tolstov.translator.service.external;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,11 +10,12 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import ru.tolstov.translator.service.TranslationFailException;
 
 import java.util.List;
 
 @Service
-public class YandexTranslateService {
+public class YandexTranslateService implements ExternalTranslationService {
     @Value("${yandex.api.iam-token}")
     private String IAM_TOKEN;
     @Value("${yandex.api.folder.id}")
@@ -24,6 +25,7 @@ public class YandexTranslateService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper mapper = new ObjectMapper();
 
+    @Override
     public String translate(String input, String sourceLanguage, String targetLanguage) throws TranslationFailException {
         var headers = configureHeaders();
         var body = configureBody(new String[] {input}, sourceLanguage, targetLanguage);

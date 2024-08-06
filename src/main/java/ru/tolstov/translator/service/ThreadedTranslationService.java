@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.tolstov.translator.model.TranslationRequest;
 import ru.tolstov.translator.repository.TranslationRequestRepository;
+import ru.tolstov.translator.service.external.ExternalTranslationService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.concurrent.*;
 @AllArgsConstructor
 public class ThreadedTranslationService implements TranslationService {
     private TranslationRequestRepository translationRequestRepository;
-    private YandexTranslateService yandexTranslateService;
+    private ExternalTranslationService externalTranslationService;
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     @Override
@@ -28,7 +29,7 @@ public class ThreadedTranslationService implements TranslationService {
 
         for (int i = 0; i < words.length; i++) {
             var word = words[i];
-            Future<String> translatedWord = executor.submit(() -> yandexTranslateService.translate(word, sourceLanguage, targetLanguage));
+            Future<String> translatedWord = executor.submit(() -> externalTranslationService.translate(word, sourceLanguage, targetLanguage));
             translatedWords.set(i, translatedWord);
         }
 
