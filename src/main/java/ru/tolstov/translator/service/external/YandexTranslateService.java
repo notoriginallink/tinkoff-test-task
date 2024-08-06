@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import ru.tolstov.translator.service.TranslationFailException;
 
@@ -46,6 +47,8 @@ public class YandexTranslateService implements ExternalTranslationService {
             } catch (JsonProcessingException e2) {
                 throw new RuntimeException(e2.getMessage());
             }
+        } catch (RestClientException e) {
+            throw new TranslationFailException(e.getMessage());
         }
 
         try {
