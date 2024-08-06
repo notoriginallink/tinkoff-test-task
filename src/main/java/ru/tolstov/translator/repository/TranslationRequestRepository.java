@@ -7,7 +7,6 @@ import ru.tolstov.translator.model.TranslationRequest;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
@@ -25,7 +24,7 @@ public class TranslationRequestRepository {
 
             st.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

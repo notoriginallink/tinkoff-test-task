@@ -1,12 +1,11 @@
 package ru.tolstov.translator.service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -16,9 +15,12 @@ import java.util.List;
 
 @Service
 public class YandexTranslateService {
-    private final String IAM_TOKEN = "t1.9euelZqSkp2YzZ6VnYuTjZKPi4-Rz-3rnpWazczLzY6Nz56TlpPPkZWdjpDl8_dUBjhK-e8RFF92_t3z9xQ1NUr57xEUX3b-zef1656Vmo2ZlZOXm83MxoyWlsvIycrK7_zF656Vmo2ZlZOXm83MxoyWlsvIycrK.KsxUpptp2gN1ktUyyUtpXYEqekihan6AJiAusEsbW9jm6zgC2fXC1qxqKDoItE-dzWQ9P39RWtes3GiGipXYCw";
-    private final String FOLDER_ID = "b1gff7ju57fv99s8j960";
-    private final String URL = "https://translate.api.cloud.yandex.net/translate/v2/translate";
+    @Value("${yandex.api.iam-token}")
+    private String IAM_TOKEN;
+    @Value("${yandex.api.folder.id}")
+    private String FOLDER_ID;
+    @Value("${yandex.api.url}")
+    private String URL;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -40,7 +42,7 @@ public class YandexTranslateService {
                 var errorMessage = mapper.readTree(e.getResponseBodyAsString()).get("message").asText();
                 throw new TranslationFailException(errorMessage);
             } catch (JsonProcessingException e2) {
-                throw new RuntimeException(e2);
+                throw new RuntimeException(e2.getMessage());
             }
         }
 
@@ -48,7 +50,7 @@ public class YandexTranslateService {
             TranslationResponse responseBody = mapper.readValue(response.getBody(), TranslationResponse.class);
             return responseBody.getTranslations().get(0).getText();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -80,11 +82,9 @@ public class YandexTranslateService {
 
     @Getter @Setter
     private static class TranslationResponse {
-        @JsonProperty("translations")
         private List<Translation> translations;
         @Getter @Setter
         private static class Translation {
-            @JsonProperty("text")
             private String text;
         }
     }

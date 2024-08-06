@@ -17,22 +17,24 @@ public class ThreadedTranslationService implements TranslationService {
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     @Override
-    public String translate(String input, String sourceLanguage, String targetLanguage, String ip) throws TranslationFailException {
-        var words = input.split(" ");
+    public String translate(String text, String sourceLanguage, String targetLanguage, String ip) throws TranslationFailException {
+        if (text.isBlank())
+            throw new TranslationFailException("Input cannot be blank");
+
+        var words = text.split(" ");
         List<Future<String>> translatedWords = new ArrayList<>(words.length);
         for (int i = 0; i < words.length; i++)
             translatedWords.add(null);
 
         for (int i = 0; i < words.length; i++) {
             var word = words[i];
-            Future<String> translatedWord = executor.submit(() -> yandexTranslateService.translate(word, sourceLanguage, targetLanguage)
-            );
+            Future<String> translatedWord = executor.submit(() -> yandexTranslateService.translate(word, sourceLanguage, targetLanguage));
             translatedWords.set(i, translatedWord);
         }
 
         String result = joinFutureStrings(translatedWords);
 
-        saveTranslationRequest(input, result, sourceLanguage, targetLanguage, ip);
+        saveTranslationRequest(text, result, sourceLanguage, targetLanguage, ip);
 
         return result;
     }
@@ -56,7 +58,7 @@ public class ThreadedTranslationService implements TranslationService {
                 builder.append(word);
                 builder.append(" ");
             } catch (Exception e) {
-                throw new TranslationFailException(e);
+                throw new TranslationFailException(e.getMessage());
             }
         }
         builder.setLength(builder.length() - 1);
