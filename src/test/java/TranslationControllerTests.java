@@ -27,8 +27,6 @@ public class TranslationControllerTests {
     @MockBean
     private TranslationRequestRepository requestRepository;
 
-    private ObjectMapper mapper = new ObjectMapper();
-
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
