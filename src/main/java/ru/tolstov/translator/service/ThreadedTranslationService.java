@@ -32,12 +32,12 @@ public class ThreadedTranslationService implements TranslationService {
 
         String result = joinFutureStrings(translatedWords);
 
-//        saveTranslationRequest(input, result, sourceLanguage, targetLanguage, ip);
+        saveTranslationRequest(input, result, sourceLanguage, targetLanguage, ip);
 
         return result;
     }
 
-    private void saveTranslationRequest(String input, String result, String sourceLanguage, String targetLanguage, String ip) throws TranslationFailException {
+    private void saveTranslationRequest(String input, String result, String sourceLanguage, String targetLanguage, String ip) {
         var request = TranslationRequest.builder()
                 .userIp(ip)
                 .input(input)

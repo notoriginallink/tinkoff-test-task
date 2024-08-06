@@ -12,13 +12,13 @@ import java.util.Properties;
 @Configuration
 public class DatabaseConfig {
     @Value("${spring.datasource.url}")
-    private static String url;
+    private String url;
     @Value("${spring.datasource.username}")
-    private static String username;
+    private String username;
     @Value("${spring.datasource.password}")
-    private static String password;
+    private String password;
 
-    public static Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         Properties props = new Properties();
         props.setProperty("user", username);
         props.setProperty("password", password);
