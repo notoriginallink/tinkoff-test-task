@@ -17,8 +17,8 @@ import java.util.List;
 
 @Service
 public class YandexTranslateService implements ExternalTranslationService {
-    @Value("${yandex.api.iam-token}")
-    private String IAM_TOKEN;
+    @Value("${yandex.api.token}")
+    private String TOKEN;
     @Value("${yandex.api.folder.id}")
     private String FOLDER_ID;
     @Value("${yandex.api.url}")
@@ -63,7 +63,7 @@ public class YandexTranslateService implements ExternalTranslationService {
     private HttpHeaders configureHeaders() {
         var headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
-        headers.set("Authorization", "Bearer " + IAM_TOKEN);
+        headers.set("Authorization", "Api-Key " + TOKEN);
 
         return headers;
     }

@@ -9,6 +9,7 @@ import ru.tolstov.translator.service.TranslationFailException;
 public class CustomControllerExceptionHandler {
     @ExceptionHandler(TranslationFailException.class)
     public ResponseEntity<String> translationFailException(TranslationFailException e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
